@@ -12,6 +12,10 @@ jobs:
     - name: Export iOS
       uses: firebelley/godot-export@v5.1.0
       with:
+        godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.3.3/Godot_v3.3.3-stable_macos.zip
+        godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.3.3/Godot_v3.3.3-stable_export_templates.tpz
+        relative_project_path: path/to/project
         platform: ios
-        export_path: path/to/exported/game
-        godot_version: 3.5.1
+        export_debug: true
+        use_godot_3: false
+        export_as_pack: true
