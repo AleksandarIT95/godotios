@@ -3,7 +3,7 @@ name: Export Godot Game for iOS
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   export-ios:
