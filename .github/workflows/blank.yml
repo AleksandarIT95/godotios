@@ -28,13 +28,3 @@ jobs:
       - name: Export Game for iOS
         run: godot --export "iOS" /path/to/export/dir
 
-      - name: Sign Game
-        run: /usr/bin/xcrun xcodebuild -exportArchive -archivePath /path/to/archive.xcarchive -exportOptionsPlist /path/to/exportOptions.plist -exportPath /path/to/export/dir
-
-      - name: Upload Game to App Store Connect
-        uses: transporter-action@v2
-        with:
-          username: ${{ secrets.APPLE_ID }}
-          password: ${{ secrets.APP_PASSWORD }}
-          bundle_id: com.yourcompany.yourgame
-          ipa_path: /path/to/export/dir/YourGame.ipa
