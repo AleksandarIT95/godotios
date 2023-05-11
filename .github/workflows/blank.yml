@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           brew update
-          brew install wget git
+          brew install wget
 
       - name: Download Godot Engine
         run: |
