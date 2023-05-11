@@ -1,24 +1,43 @@
-name: iOS Export
+name: Export Godot Game for iOS
 
 on:
   push:
-    branches: [main]
+    branches:
+      - dev
 
 jobs:
-  export:
-    runs-on: macOS-latest
+  export-ios:
+    runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: firebelley/godot-export@v5.1.0
-      with:
-        platform: ios
-        export_presets: export_presets
-    - name: Archive exported game
-      run: |
-        cd export/iOS
-        zip -r my_game_ios.zip .
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: my_game_ios
-        path: export/iOS/my_game_ios.zip
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install wget
+          brew install git
+      - name: Export iOS
+        uses: firebelley/godot-export@v5.1.0
+          with:
+           godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
+           godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
+           relative_project_path: './'
+           export_preset: export_presets
+           export_debug: true
+           export_as_pack: true
+      - name: Export Xcode project
+        run: |
+          export_path="export/iOS"
+          ./godot/Godot --path . --export "iOS" "$export_path/game.xcodeproj"
+      - name: Archive iOS App
+        uses: actions/upload-artifact@v2
+        with:
+          name: game.ipa
+          path: export/iOS/game.ipa
+
+      - name: Archive Xcode Project
+        uses: actions/upload-artifact@v2
+        with:
+          name: game.xcodeproj
+          path: export/iOS/game.xcodeproj
