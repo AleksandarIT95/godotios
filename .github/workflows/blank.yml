@@ -1,14 +1,33 @@
 name: iOS Export
+
 on:
   push:
     branches:
       - main
+
 jobs:
   build:
     runs-on: macOS-latest
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Install Xcode
+      uses: actions/setup-xcode@v2.4.1
+      with:
+        xcode-select: 'true'
+
+    - name: Install Python
+      uses: actions/setup-python@v2.2.2
+      with:
+        python-version: '3.9'
+
+    - name: Install pip dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
     - name: Export iOS
       uses: firebelley/godot-export@v5.1.0
       with:
@@ -18,15 +37,12 @@ jobs:
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
-    - name: Install Xcode
-      uses: actions/setup-xcode@v2.4.0
-      with:
-        xcode-version: "13.2"
-    - name: Build iOS
-      run: xcodebuild -workspace path/to/your.xcworkspace -scheme "Scheme Name" -configuration Release -archivePath $HOME/build.xcarchive archive -quiet
+
     - name: Export IPA
+      run: xcodebuild -exportArchive -archivePath ./ios_export/archive.xcarchive -exportPath ./ios_export -exportOptionsPlist exportOptions.plist
+
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
-        name: ios-artifact
-        path: $HOME/build.xcarchive/Products/Applications/*.app
-
+        name: iOS Build
+        path: ./path/to/project/ios_export
