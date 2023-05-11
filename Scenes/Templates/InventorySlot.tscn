@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scenes/Templates/InventorySlot.gd" type="Script" id=1]
+
+[node name="Inv1" type="Button"]
+margin_right = 60.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 60, 60 )
+expand_icon = true
+script = ExtResource( 1 )
+
+[node name="Label" type="Label" parent="."]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -43.0
+margin_top = -15.0
+margin_right = -3.0
+margin_bottom = -1.0
+text = "10"
+align = 2
+valign = 2
+
+[connection signal="pressed" from="." to="." method="_on_Inv1_pressed"]

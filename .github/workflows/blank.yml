@@ -1,0 +1,76 @@
+name: Export Godot Game for iOS
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  export-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install wget
+          brew install git
+      
+      - name: Download Godot CLI
+        run: |
+          curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
+      
+      - name: Extract Godot CLI
+        run: |
+          pwd
+          ls
+          unzip godot.zip -d godot
+          mv godot/Godot.app/Contents/MacOS/* godot/
+          rm -rf godot/Godot.app
+      
+      - name: List contents of godot directory
+        run: |
+          ls -la godot
+      
+      - name: Clone export templates repository
+        run: |
+          git clone --branch 3.5.1-stable https://github.com/godotengine/godot-templates.git
+          
+      - name: Install export templates
+        run: |
+          mkdir -p ~/.local/share/godot/templates/3.5.1.stable
+          cp -r godot-templates/iphone_export ~/.local/share/godot/templates/3.5.1.stable/iphone_export
+      
+      - name: Export game for iOS
+        run: |
+          export_path="export/iOS"
+          ./godot/Godot --path . --export "iOS" "$export_path/game.ipa"
+      
+      - name: Check Godot version
+        run: |
+          ./godot/Godot --full-version
+        continue-on-error: true
+      
+      - name: Build Godot Game for iOS
+        run: |
+          export_path="export/iOS"
+          ./godot/Godot --path . --export "iOS" "$export_path/game.ipa"
+      
+      - name: Export Xcode project
+        run: |
+          export_path="export/iOS"
+          ./godot/Godot --path . --export "iOS" "$export_path/game.xcodeproj"
+      
+      - name: Archive iOS App
+        uses: actions/upload-artifact@v2
+        with:
+          name: game.ipa
+          path: export/iOS/game.ipa
+      
+      - name: Archive Xcode Project
+        uses: actions/upload-artifact@v2
+        with:
+          name: game.xcodeproj
+          path: export/iOS/game.xcodeproj
