@@ -19,8 +19,8 @@ jobs:
 
       - name: Download Godot Engine
         run: |
-          wget https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
-          unzip Godot_v3.5.1-stable_osx.universal.zip -d godot
+           wget https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
+           unzip Godot_v3.5.1-stable_osx.universal.zip -d godot
 
       - name: Export iOS
         uses: firebelley/godot-export@v5.1.0
