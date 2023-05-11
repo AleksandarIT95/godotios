@@ -15,21 +15,28 @@ jobs:
       - name: Install dependencies
         run: |
           brew update
-          brew install wget
-          brew install git
+          brew install wget git
+
+      - name: Download Godot Engine
+        run: |
+          wget https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
+          unzip Godot_v3.5.1-stable_osx.universal.zip -d godot
+
       - name: Export iOS
         uses: firebelley/godot-export@v5.1.0
-          with:
-           godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
-           godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
-           relative_project_path: './'
-           export_preset: export_presets
-           export_debug: true
-           export_as_pack: true
+        with:
+          godot_executable_path: ./godot/Godot
+          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
+          relative_project_path: './'
+          export_preset: MyExportPreset
+          export_debug: true
+          export_as_pack: true
+
       - name: Export Xcode project
         run: |
           export_path="export/iOS"
           ./godot/Godot --path . --export "iOS" "$export_path/game.xcodeproj"
+
       - name: Archive iOS App
         uses: actions/upload-artifact@v2
         with:
