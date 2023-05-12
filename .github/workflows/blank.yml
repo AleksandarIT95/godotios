@@ -19,7 +19,6 @@ jobs:
         export_debug: true
         export_as_pack: true
         platform: ios
-        export_path: './ios'
         custom_template_path: './ios_templates'
         custom_package_path: './ios_packages'
         export_options:
@@ -28,6 +27,7 @@ jobs:
           export_ipa: true
           export_bitcode: true
           use_generic_icon: true
+        export_path: './ios'
     - name: Upload iOS Artifact
       uses: actions/upload-artifact@v2
       with:
