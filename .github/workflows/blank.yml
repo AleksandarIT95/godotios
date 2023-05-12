@@ -1,50 +1,29 @@
-name: Export Godot Game for iOS
-
+name: iOS Export
 on:
   push:
     branches:
       - main
-
 jobs:
-  export-ios:
-    runs-on: macos-latest
+  build:
+    runs-on: macOS-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: |
-          brew update
-          brew install wget
-
-      - name: Download Godot Engine
-        run: |
-           wget https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
-           unzip Godot_v3.5.1-stable_osx.universal.zip -d godot
-
-      - name: Export iOS
-        uses: firebelley/godot-export@v5.1.0
-        with:
-          godot_executable_path: ./godot/Godot
-          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
-          relative_project_path: './'
-          export_preset: MyExportPreset
-          export_debug: true
-          export_as_pack: true
-
-      - name: Export Xcode project
-        run: |
-          export_path="export/iOS"
-          ./godot/Godot --path . --export "iOS" "$export_path/game.xcodeproj"
-
-      - name: Archive iOS App
-        uses: actions/upload-artifact@v2
-        with:
-          name: game.ipa
-          path: export/iOS/game.ipa
-
-      - name: Archive Xcode Project
-        uses: actions/upload-artifact@v2
-        with:
-          name: game.xcodeproj
-          path: export/iOS/game.xcodeproj
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Export iOS
+      uses: firebelley/godot-export@v5.1.0
+      with:
+        godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
+        godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
+        relative_project_path: './'
+        export_preset: export_presets
+        export_debug: true
+        export_as_pack: true
+        platform: ios
+        export_path: './ios'
+        custom_template_path: './ios_templates'
+        custom_package_path: './ios_packages'
+        development_team: YOUR_TEAM_ID_HERE
+        bundle_identifier: YOUR_BUNDLE_ID_HERE
+        export_ipa: true
+        export_bitcode: true
+        use_generic_icon: true
