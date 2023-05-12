@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Godot
-        uses: godotengine/setup-godot@v2
+        uses: firebelley/godot-export@v5.1.0
         with:
           godot-version: 3.5.1
 
