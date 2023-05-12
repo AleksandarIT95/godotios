@@ -1,66 +1,28 @@
-name: Android Export
+name: Export and build iOS app
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Export and build
+    runs-on: macos-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK 8
-        uses: actions/setup-java@v2
-        with:
-          java-version: 8
-
-      - name: Download Android SDK
-        uses: android-actions/setup-android-sdk@v2
-        with:
-          sdk-platform: '29'
-          sdk-build-tools: '29.0.3'
-
-      - name: Build Android APK
-        uses: Firebelley/godot-export@v5.1.0
-        with:
-          godot-version: '3.5.1'
-          export-presets: 'Android'
-          export-path: './export'
-          android-sdk-path: ${{ env.ANDROID_SDK_ROOT }}
-
-      - name: Download APKs
-        uses: actions/download-artifact@v2
-        with:
-          name: apks
-          path: export
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Automatic release from ${{ github.ref }}
-          draft: false
-          prerelease: false
-
-      - name: Upload APKs
-        uses: actions/upload-artifact@v2
-        with:
-          name: apks
-          path: export
-          if-no-files-found: error
-
-      - name: Attach APKs to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            export/*.apk
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ github.ref }}
+    - uses: actions/checkout@v2
+    - name: Export Godot game
+      uses: firebelley/godot-export@v5.3.0
+      with:
+        platform: ios
+        export_path: ./export
+        project_path: './'
+        godot_version: 3.5.1
+    - name: Move export to Xcode project
+      run: mv ./export/* ./path/to/your/xcode/project
+    - name: Build iOS app with Xcode
+      run: xcodebuild -workspace YourWorkspace.xcworkspace -scheme YourScheme -destination generic/platform=iOS build
+    - name: Upload app archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: ios-app
+        path: path/to/your/xcode/project/YourApp.xcarchive
