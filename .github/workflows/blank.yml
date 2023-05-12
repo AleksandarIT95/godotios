@@ -15,8 +15,8 @@ jobs:
           curl -L -o Godot_v3.5.1-stable_osx.universal.zip https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
           unzip Godot_v3.5.1-stable_osx.universal.zip
           ls Godot_v3.5.1-stable_osx.universal/Godot\ Engine.app/Contents/MacOS/
-          chmod +x Godot_v3.5.1-stable_osx.universal/Godot\ Engine.app/Contents/MacOS/Godot
-          Godot_v3.5.1-stable_osx.universal/Godot\ Engine.app/Contents/MacOS/Godot --version
+          chmod +x ./Godot_v3.5.1-stable_osx.universal/Godot\ Engine.app/Contents/MacOS/Godot
+          ./Godot_v3.5.1-stable_osx.universal/Godot\ Engine.app/Contents/MacOS/Godot --version
 
       - name: Export iOS
         uses: firebelley/godot-export@v5.1.0
