@@ -10,15 +10,20 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Download and extract iOS export template
+      run: |
+        mkdir -p ./export/ios_template
+        curl -L https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates_ios.tpz -o ./export/ios_template.zip
+        unzip ./export/ios_template.zip -d ./export/ios_template
     - name: Export Godot game
       uses: firebelley/godot-export@v5.1.0
       with:
         godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
-        godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
         relative_project_path: './'
         platform: ios
         export_path: ./export
         godot_version: 3.5.1
+        export_template_path: ./export/ios_template.zip
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
