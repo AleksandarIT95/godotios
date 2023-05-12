@@ -1,34 +1,33 @@
-name: iOS Export
+name: Export iOS app
+
 on:
   push:
     branches:
       - main
+
 jobs:
-  build:
-    runs-on: macOS-latest
+  export:
+    runs-on: macos-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Download Godot
-        run: |
-          curl -L -o Godot_v3.5.1-stable_osx.universal.zip https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
-          unzip Godot_v3.5.1-stable_osx.universal.zip
-          ls "./Godot_v3.5.1-stable_osx.universal/Godot Engine.app/Contents/MacOS/"
-          chmod +x "./Godot_v3.5.1-stable_osx.universal/Godot Engine.app/Contents/MacOS/Godot"
-          "./Godot_v3.5.1-stable_osx.universal/Godot Engine.app/Contents/MacOS/Godot" --version
+      - name: Setup Godot
+        uses: godotengine/setup-godot@v2
+        with:
+          godot-version: 3.5.1
 
-      - name: Export iOS
+      - name: Export iOS app
         uses: firebelley/godot-export@v5.1.0
         with:
-          godot_executable_path: "./Godot_v3.5.1-stable_osx.universal/Godot Engine.app/Contents/MacOS/Godot"
-          relative_project_path: './'
-          export_preset: export_presets
-          export_debug: true
-          export_as_pack: true
+          godot-project: .
+          platform: ios
+          export-presets: 'debug'
+          export-path: './export'
+          export-name: 'MyGame'
 
-      - name: Upload Artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: iOS Build
-          path: /Users/runner/.local/share/godot/builds/iOS/aaa
+          name: MyGame-iOS
+          path: ./export/MyGame.ipa
