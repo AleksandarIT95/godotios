@@ -22,7 +22,12 @@ jobs:
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
-    - name: Install fastlane
-      run: sudo gem install fastlane -NV
-    - name: Build and distribute iOS app with fastlane
-      run: fastlane ios build app_identifier:com.yourcompany.yourapp
+    - name: Create Xcode project
+      run: /Applications/Xcode.app/Contents/Developer/usr/bin/godot_ios_export.py --create-xcodeproj --template=./export/ios_template --path=./export
+    - name: Build iOS app with Xcode
+      run: xcodebuild -workspace ./export/ios_project.xcworkspace -scheme ios_app -sdk iphoneos -configuration Release archive -archivePath ./export/ios_app.xcarchive
+    - name: Upload app archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: ios-app
+        path: ./export/ios_app.xcarchive
