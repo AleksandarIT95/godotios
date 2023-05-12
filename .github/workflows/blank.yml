@@ -22,8 +22,14 @@ jobs:
         export_path: './ios'
         custom_template_path: './ios_templates'
         custom_package_path: './ios_packages'
-        development_team: YOUR_TEAM_ID_HERE
-        bundle_identifier: YOUR_BUNDLE_ID_HERE
-        export_ipa: true
-        export_bitcode: true
-        use_generic_icon: true
+        export_options:
+          development_team: YOUR_TEAM_ID_HERE
+          bundle_identifier: YOUR_BUNDLE_ID_HERE
+          export_ipa: true
+          export_bitcode: true
+          use_generic_icon: true
+    - name: Upload iOS Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: iOS Export
+        path: './ios'
