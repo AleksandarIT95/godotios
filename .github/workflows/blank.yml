@@ -13,7 +13,7 @@ jobs:
     - name: Download and extract iOS export template
       run: |
         mkdir -p ./export/ios_template
-        curl -L https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates_ios.tpz -o ./export/ios_template.zip
+        curl -L https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz -o ./export/ios_template.zip
         unzip ./export/ios_template.zip -d ./export/ios_template
     - name: Export Godot game
       uses: firebelley/godot-export@v5.1.0
