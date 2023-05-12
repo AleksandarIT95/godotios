@@ -17,17 +17,12 @@ jobs:
         godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
         relative_project_path: './'
         platform: ios
-        export_path: ./export
+        export_path: './export'
         godot_version: 3.5.1
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
-    - name: Move export to Xcode project
-      run: mv ./export/* ./path/to/your/xcode/project
-    - name: Build iOS app with Xcode
-      run: xcodebuild -workspace YourWorkspace.xcworkspace -scheme YourScheme -destination generic/platform=iOS build
-    - name: Upload app archive
-      uses: actions/upload-artifact@v2
-      with:
-        name: ios-app
-        path: path/to/your/xcode/project/YourApp.xcarchive
+    - name: Install fastlane
+      run: sudo gem install fastlane -NV
+    - name: Build and distribute iOS app with fastlane
+      run: fastlane ios build app_identifier:com.yourcompany.yourapp
