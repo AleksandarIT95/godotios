@@ -11,12 +11,17 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Export Godot game
-      uses: firebelley/godot-export@v5.3.0
+      uses: firebelley/godot-export@v5.3.1
       with:
+        godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
+        godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
+        relative_project_path: './'
         platform: ios
         export_path: ./export
-        project_path: './'
         godot_version: 3.5.1
+        export_preset: export_presets
+        export_debug: true
+        export_as_pack: true
     - name: Move export to Xcode project
       run: mv ./export/* ./path/to/your/xcode/project
     - name: Build iOS app with Xcode
