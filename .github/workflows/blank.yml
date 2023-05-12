@@ -19,6 +19,7 @@ jobs:
       uses: firebelley/godot-export@v5.1.0
       with:
         godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
+        godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
         relative_project_path: './'
         platform: ios
         export_path: ./export
