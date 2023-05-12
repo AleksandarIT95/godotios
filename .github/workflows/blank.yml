@@ -17,7 +17,7 @@ jobs:
         godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
         relative_project_path: './'
         platform: ios
-        export_path: './export'
+        export_path: ./export
         godot_version: 3.5.1
         export_preset: export_presets
         export_debug: true
@@ -25,9 +25,9 @@ jobs:
     - name: Create Xcode project
       run: /Applications/Xcode.app/Contents/Developer/usr/bin/godot_ios_export.py --create-xcodeproj --template=./export/ios_template --path=./export
     - name: Build iOS app with Xcode
-      run: xcodebuild -workspace ./export/ios_project.xcworkspace -scheme ios_app -sdk iphoneos -configuration Release archive -archivePath ./export/ios_app.xcarchive
+      run: xcodebuild -workspace ./export/YourApp.xcworkspace -scheme YourScheme -destination generic/platform=iOS build
     - name: Upload app archive
       uses: actions/upload-artifact@v2
       with:
         name: ios-app
-        path: ./export/ios_app.xcarchive
+        path: ./export/YourApp.xcarchive
