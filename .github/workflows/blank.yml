@@ -9,15 +9,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Install Export Templates
-      run: |
-        mkdir -p /Users/runner/.local/share/godot
-        curl -L https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz --output /Users/runner/.local/share/godot/templates.tpz
-        mkdir -p /Users/runner/.local/share/godot/templates
-        unzip -o /Users/runner/.local/share/godot/templates.tpz -d /Users/runner/.local/share/godot/templates
-        rm -rf /Users/runner/Library/Application\ Support/Godot/export_templates
-        mv /Users/runner/.local/share/godot/templates /Users/runner/.local/share/godot/3.5.1.stable
-        mv /Users/runner/.local/share/godot/3.5.1.stable /Users/runner/Library/Application\ Support/Godot/export_templates
     - name: Export iOS
       uses: firebelley/godot-export@v5.1.0
       with:
@@ -38,6 +29,10 @@ jobs:
         export_debug: true
         export_as_pack: true
         platform: android
+    - name: Create Directory and Move Export Templates
+      run: |
+        mkdir -p /Users/runner/Library/Application\ Support/Godot/export_templates
+        mv /Users/runner/.local/share/godot/3.5.1.stable /Users/runner/Library/Application\ Support/Godot/export_templates
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
