@@ -1,4 +1,4 @@
-name: iOS Export1
+name: iOS Export
 on:
   push:
     branches:
@@ -18,17 +18,8 @@ jobs:
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
-        platform: ios
-        custom_template_path: './ios_templates'
-        custom_package_path: './ios_packages'
-        development_team: YOUR_TEAM_ID_HERE
-        bundle_identifier: YOUR_BUNDLE_ID_HERE
-        export_ipa: true
-        export_bitcode: true
-        use_generic_icon: true
-        export_path: './ios'
-    - name: Upload iOS Artifact
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: iOS Export
-        path: './ios'
+        name: iOS Build
+        path: /Users/runner/.local/share/godot/builds/iOS/aaa
