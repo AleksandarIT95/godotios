@@ -5,20 +5,10 @@ on:
       - main
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Export iOS
-      uses: firebelley/godot-export@v5.1.0
-      with:
-        godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
-        godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
-        relative_project_path: './'
-        export_preset: export_presets
-        export_debug: true
-        export_as_pack: true
-        platform: ios
     - name: Export Android
       uses: firebelley/godot-export@v5.1.0
       with:
@@ -33,11 +23,6 @@ jobs:
       run: |
         mkdir -p /Users/runner/Library/Application\ Support/Godot/export_templates
         mv /Users/runner/.local/share/godot/3.5.1.stable /Users/runner/Library/Application\ Support/Godot/export_templates
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: iOS Build
-        path: /Users/runner/.local/share/godot/builds/iOS/aaa.ipa
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
