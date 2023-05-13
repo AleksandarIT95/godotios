@@ -29,7 +29,7 @@ jobs:
         node-version: '16'
         run: |
          npm install -g xcode
-         xcode archive -allowProvisioningUpdates -workspace MyProject.xcworkspace -scheme MyScheme -archivePath MyProject.xcarchive
+         xcode archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
 
     - name: Export IPA
       uses: actions/upload-artifact@v2
