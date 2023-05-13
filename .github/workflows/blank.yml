@@ -28,7 +28,7 @@ jobs:
         export_path: '/Users/runner/work/project-name/project-name/ios/game.ipa'
 
     - name: Archive iOS App with Xcode
-      uses: apple-actions/xcode@v3
+      uses: sinoru/actions-setup-xcode@v2.0.2
       with:
         destination: generic/platform=iOS
         xcworkspace-path: './ios/project-name.xcworkspace'
