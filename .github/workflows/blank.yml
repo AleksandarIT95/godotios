@@ -1,4 +1,3 @@
-
 name: iOS Export
 
 on:
@@ -9,15 +8,17 @@ on:
 jobs:
   build:
     runs-on: macOS-latest
-    
+
     steps:
-    - name: Create godotgame directory
-      run: mkdir godotgame
-      
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Export iOS 
+    - name: Make directory for godotgame
+      run: |
+        mkdir godotgame
+
+    - name: Export iOS
+      working-directory: ./godotgame
       uses: firebelley/godot-export@v5.1.0
       with:
         godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
@@ -26,27 +27,33 @@ jobs:
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
-        export_path: godotgame/*
         
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Godot iOS Build 
+        path: godotgame/*
+
     - name: Check Xcode project files
       run: |
         if [ ! -f "./godotgame/project.pbxproj" ]; then echo "Error: Missing project.pbxproj file"; exit 1; fi
         if [ ! -f "./godotgame/Info.plist" ]; then echo "Error: Missing Info.plist file"; exit 1; fi
         if [ ! -d "./godotgame/Assets.xcassets" ]; then echo "Error: Missing Assets.xcassets directory"; exit 1; fi
-        
-    - name: Build iOS App
-      working-directory: ./godotgame
+
+    - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '16'
+
+    - name: Build iOS App
+      working-directory: ./godotgame
       run: |
         npm install -g xcode
         xcode archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
 
-         
     - name: Export IPA
       working-directory: ./godotgame
       uses: actions/upload-artifact@v2
       with:
         name: iOS Build
-        path: MyProject.xcarchive/Products/Applications/MyProject.ipa
+        path: aaa.xcarchive/Products/Applications/aaa.ipa
