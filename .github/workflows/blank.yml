@@ -35,10 +35,11 @@ jobs:
         path: ./ios/
 
     - name: Install Xcode
-      uses: actions/setup-xcode@v2
+      uses: sinoru/actions-setup-xcode@v2.0.2
       with:
-        version: '12.5.1'
-
+        version: '13.4'    
+    - run: fastlane scan
+    
     - name: Build iOS App
       run: |
         cd ios
