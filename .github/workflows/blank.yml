@@ -4,35 +4,34 @@ on:
   push:
     branches:
       - main
-
+      
 jobs:
   build:
     runs-on: macOS-latest
 
     steps:
-      - name: Export iOS
-        uses: firebelley/godot-export@v5.1.0
-        with:
-          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
-          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
-          relative_project_path: './'
-          export_preset: export_presets
-          export_debug: true
-          export_as_pack: true
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      - name: Build iOS App
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-          run: |
-           npm install -g xcode
-           xcode-select --install
-           xcodebuild -version
-           xcodebuild -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive archive
-           xcodebuild -exportArchive -allowProvisioningUpdates -archivePath aaa.xcarchive -exportOptionsPlist exportOptions.plist -exportPath ./
+    - name: Export iOS
+      uses: firebelley/godot-export@v5.1.0
+      with:
+        godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
+        godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
+        relative_project_path: './'
+        export_preset: export_presets
+        export_debug: true
+        export_as_pack: true
 
-      - name: Export IPA
-        uses: actions/upload-artifact@v2
-        with:
-          name: iOS Build
-          path: ./*.ipa
+    - name: Build iOS App
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        run: |
+         npm install -g xcode
+         xcode archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
+    - name: Export IPA
+      uses: actions/upload-artifact@v2
+      with:
+        name: iOS Build
+        path: ${{ github.workspace }}/aaa.xcarchive/Products/Applications/aaa.ipa
