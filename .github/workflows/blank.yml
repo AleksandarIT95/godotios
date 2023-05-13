@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-
+      
 jobs:
   build:
     runs-on: macOS-latest
@@ -27,9 +27,9 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '16'
-      run: |
-        npm install -g xcode
-        xcode archive -allowProvisioningUpdates -workspace MyProject.xcworkspace -scheme MyScheme -archivePath MyProject.xcarchive
+        run: |
+         npm install -g xcode
+         xcode archive -allowProvisioningUpdates -workspace MyProject.xcworkspace -scheme MyScheme -archivePath MyProject.xcarchive
 
     - name: Export IPA
       uses: actions/upload-artifact@v2
