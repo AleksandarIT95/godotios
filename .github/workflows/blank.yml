@@ -1,39 +1,38 @@
-name: Export and build iOS app
+name: iOS Export
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
-    name: Export and build
-    runs-on: macos-latest
+    runs-on: macOS-latest
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Download and extract iOS export template
-      run: |
-        mkdir -p ./export/ios_template
-        curl -L https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz -o ./export/ios_template.zip
-        unzip ./export/ios_template.zip -d ./export/ios_template
-    - name: Export Godot game
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Export iOS
       uses: firebelley/godot-export@v5.1.0
       with:
         godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
         godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
         relative_project_path: './'
-        platform: ios
-        export_path: ./export
-        godot_version: 3.5.1
-        export_template_path: ./export/ios_template.zip
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
-    - name: Create Xcode project
-      run: /Applications/Xcode.app/Contents/Developer/usr/bin/godot_ios_export.py --create-xcodeproj --template=./export/ios_template --path=./export
-    - name: Build iOS app with Xcode
-      run: xcodebuild -workspace ./export/YourApp.xcworkspace -scheme YourScheme -destination generic/platform=iOS build
-    - name: Upload app archive
+
+    - name: Build iOS App
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+      run: |
+        npm install -g xcode
+        xcode archive -allowProvisioningUpdates -workspace MyProject.xcworkspace -scheme MyScheme -archivePath MyProject.xcarchive
+
+    - name: Export IPA
       uses: actions/upload-artifact@v2
       with:
-        name: ios-app
-        path: ./export/YourApp.xcarchive
+        name: iOS Build
+        path: MyProject.xcarchive/Products/Applications/MyProject.ipa
