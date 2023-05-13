@@ -33,8 +33,8 @@ jobs:
       uses: apple/setup-xcode@v2
       with:
         xcode-select: '12.5'
-      run: |
-        xcodebuild archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
+        run: |
+         xcodebuild archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
 
     - name: Export IPA
       uses: actions/upload-artifact@v2
