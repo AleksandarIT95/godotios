@@ -1,4 +1,4 @@
-name: iOS Export and Xcode Build
+name: iOS Export
 
 on:
   push:
@@ -6,12 +6,15 @@ on:
       - main
 
 jobs:
-  export_and_build:
+  build:
     runs-on: macOS-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Create iOS directory
+      run: mkdir -p ios
 
     - name: Export iOS
       uses: firebelley/godot-export@v5.1.0
@@ -22,25 +25,15 @@ jobs:
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
+        export_path: './ios/game.ipa'
 
-    - name: Generate Xcode Project
+    - name: Build iOS App
       run: |
         cd ios
-        godot --no-window --export "iOS Xcode" ../ios_xcode/aaa.xcodeproj
-
-    - name: Install Xcode Dependencies
-      run: |
-        xcode-select --install
-
-    - name: Open Xcode Project
-      run: open ios_xcode/aaa.xcodeproj
-
-    - name: Archive iOS App
-      run: |
-        xcodebuild archive -workspace ios_xcode/aaa.xcworkspace -scheme MyScheme -archivePath ios_xcode/aaa.xcarchive -allowProvisioningUpdates
+        xcodebuild archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
 
     - name: Export IPA
       uses: actions/upload-artifact@v2
       with:
         name: iOS Build
-        path: ios_xcode/aaa.xcarchive/Products/Applications/aaa.ipa
+        path: ./ios/aaa.xcarchive/Products/Applications/aaa.ipa
