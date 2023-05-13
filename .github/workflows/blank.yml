@@ -26,11 +26,23 @@ jobs:
         export_debug: true
         export_as_pack: true
         export_path: './ios/game.ipa'
+        
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: iOS Build
+        path: ./ios/
+
+    - name: Install Xcode
+      uses: actions/setup-xcode@v2
+      with:
+        version: '12.5.1'
 
     - name: Build iOS App
       run: |
         cd ios
-        xcodebuild archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
+        xcodebuild archive -allowProvisioningUpdates -workspace YourWorkspaceName.xcworkspace -scheme YourSchemeName -archivePath aaa.xcarchive
 
     - name: Export IPA
       uses: actions/upload-artifact@v2
