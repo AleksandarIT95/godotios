@@ -27,14 +27,12 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Godot iOS Build 
-        path: export/iOS/aaa.ipa.zip
+        path: export/iOS/aaa.ipa
 
     - name: Build iOS App
-      uses: apple/setup-xcode@v2
-      with:
-        xcode-select: '12.5'
-        run: |
-         xcodebuild archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
+      run: |
+        sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+        xcodebuild archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
 
     - name: Export IPA
       uses: actions/upload-artifact@v2
