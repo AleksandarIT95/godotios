@@ -1,3 +1,4 @@
+
 name: iOS Export
 
 on:
@@ -8,12 +9,15 @@ on:
 jobs:
   build:
     runs-on: macOS-latest
-
+    
     steps:
+    - name: Create godotgame directory
+      run: mkdir godotgame
+      
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Export iOS
+    - name: Export iOS 
       uses: firebelley/godot-export@v5.1.0
       with:
         godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
@@ -21,21 +25,28 @@ jobs:
         relative_project_path: './'
         export_preset: export_presets
         export_debug: true
-        export_as_pack: false
+        export_as_pack: true
+        export_path: godotgame/*
         
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: iOS Build
-        path: /Users/runner/.local/share/godot/builds/iOS/aaa.ipa.pck
-
-    - name: Build iOS App
+    - name: Check Xcode project files
       run: |
-        sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-        xcodebuild archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
+        if [ ! -f "./godotgame/project.pbxproj" ]; then echo "Error: Missing project.pbxproj file"; exit 1; fi
+        if [ ! -f "./godotgame/Info.plist" ]; then echo "Error: Missing Info.plist file"; exit 1; fi
+        if [ ! -d "./godotgame/Assets.xcassets" ]; then echo "Error: Missing Assets.xcassets directory"; exit 1; fi
+        
+    - name: Build iOS App
+      working-directory: ./godotgame
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+      run: |
+        npm install -g xcode
+        xcode archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
 
+         
     - name: Export IPA
+      working-directory: ./godotgame
       uses: actions/upload-artifact@v2
       with:
         name: iOS Build
-        path: aaa.xcarchive/Products/Applications/aaa.ipa
+        path: MyProject.xcarchive/Products/Applications/MyProject.ipa
