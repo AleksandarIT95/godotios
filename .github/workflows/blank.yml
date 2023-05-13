@@ -34,4 +34,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: iOS Build
-        ppath: ./aaa.xcarchive/Products/Applications/aaa.ipa
+        path: ./aaa.xcarchive/Products/Applications/aaa.ipa
