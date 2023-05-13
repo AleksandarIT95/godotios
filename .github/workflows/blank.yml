@@ -1,12 +1,12 @@
-name: iOS Export
+name: iOS Export and Xcode Build
 
 on:
   push:
     branches:
       - main
-      
+
 jobs:
-  build:
+  export_and_build:
     runs-on: macOS-latest
 
     steps:
@@ -23,15 +23,24 @@ jobs:
         export_debug: true
         export_as_pack: true
 
-    - name: Build iOS App
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-        run: |
-         npm install -g xcode
-         xcode archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme MyScheme -archivePath aaa.xcarchive
+    - name: Generate Xcode Project
+      run: |
+        cd ios
+        godot --no-window --export "iOS Xcode" ../ios_xcode/aaa.xcodeproj
+
+    - name: Install Xcode Dependencies
+      run: |
+        xcode-select --install
+
+    - name: Open Xcode Project
+      run: open ios_xcode/aaa.xcodeproj
+
+    - name: Archive iOS App
+      run: |
+        xcodebuild archive -workspace ios_xcode/aaa.xcworkspace -scheme MyScheme -archivePath ios_xcode/aaa.xcarchive -allowProvisioningUpdates
+
     - name: Export IPA
       uses: actions/upload-artifact@v2
       with:
         name: iOS Build
-        path: ./aaa.xcarchive/Products/Applications/aaa.ipa
+        path: ios_xcode/aaa.xcarchive/Products/Applications/aaa.ipa
