@@ -27,10 +27,10 @@ jobs:
         export_as_pack: true
         export_path: '/Users/runner/work/aaa/aaa/ios/game.ipa'
 
-    - name: Install Xcode
-      uses: sinoru/actions-setup-xcode@v2.0.2
-      with:
-        xcode-version: 'default'
+   # - name: Install Xcode
+   #   uses: sinoru/actions-setup-xcode@v2.0.2
+    #  with:
+   #     xcode-version: 'default'
 
     - name: Archive iOS App with Xcode
       run: |
