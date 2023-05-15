@@ -27,19 +27,22 @@ jobs:
         export_as_pack: true
         export_path: '/Users/runner/work/project-name/project-name/ios/game.ipa'
 
+    - name: List iOS directory contents
+      run: ls -l ios
+
     - name: Archive iOS App with Xcode
       run: |
         cd ios
         xcodebuild archive -allowProvisioningUpdates -workspace ../aaa.xcworkspace -scheme aaa -archivePath aaa.xcarchive
 
     - name: Upload iOS Build Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: iOS Build
         path: /Users/runner/Library/Developer/Xcode/Archives/{latest}/aaa.xcarchive/Products/Applications/project-name.app
 
     - name: Upload iOS IPA Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: iOS IPA
         path: /Users/runner/work/project-name/project-name/ios/game.ipa
