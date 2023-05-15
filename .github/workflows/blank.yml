@@ -17,16 +17,18 @@ jobs:
     
     - name: Set up Godot Engine
       run: |
-        curl -sSL "https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip" -o godot.zip
+        curl -sSL "https://downloads.tuxfamily.org/godotengine/latest/Godot_v3.5.2-stable_osx.universal.zip" -o godot.zip
         unzip godot.zip
-        chmod +x Godot_v3.5.1-stable_osx.universal/Godot.app/Contents/MacOS/Godot
+        chmod +x Godot.app/Contents/MacOS/Godot || exit 1
+        ls -l Godot.app/Contents/MacOS/ # Optional: List the contents of the folder for troubleshooting
         
     - name: Install Xcode
-      uses: actions/setup-xcode@v2
+      uses: actions/setup-node@v2
       with:
-        xcode-select: '12.x'
+        node-version: "14"
+        xcode-version: "12.x"
     
     - name: Build for iOS
       run: |
-        xcodebuild -project /path/to/your/project.xcodeproj -scheme YourScheme -configuration Release CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+        Godot.app/Contents/MacOS/Godot --export "iOS" /path/to/exported/game
         # Additional build and test commands
