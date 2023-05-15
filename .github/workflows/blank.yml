@@ -15,12 +15,12 @@ jobs:
     
     - name: Download Godot 3.5.1
       run: |
-        wget https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.64.zip
-        unzip Godot_v3.5.1-stable_osx.64.zip
+        wget https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
+        unzip Godot_v3.5.1-stable_osx.universal.zip
     
     - name: Export Game
       run: |
-        ./Godot_v3.5.1-stable_osx.64 --export "Platform" /path/to/exported/game
+        ./Godot.app --export "Platform" /path/to/exported/game
     
     - name: Create Artifact
       uses: actions/upload-artifact@v2
