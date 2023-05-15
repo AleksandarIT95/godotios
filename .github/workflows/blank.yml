@@ -1,29 +1,22 @@
-name: iOS Export and Upload
+name: Export Godot Game
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
 jobs:
-  build:
+  export:
     runs-on: macOS-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Export iOS
-      uses: firebelley/godot-export@v5.1.0
-      with:
-        godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
-        godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
-        relative_project_path: './'
-        export_preset: export_presets
-        export_debug: true
-        export_as_pack: true
-    - name: Create Export Folder
-      run: mkdir -p ./exported_files
-    - name: Move Exported Files
-      run: mv ./*.zip ./exported_files/ || true
-    - name: Upload Exported Files
-      uses: actions/upload-artifact@v2
-      with:
-        name: Exported Files
-        path: ./exported_files
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download Godot
+        run: curl -LO https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_macos.64.zip
+
+      - name: Unzip Godot
+        run: unzip Godot_v3.5.1-stable_macos.64.zip
+
+      - name: Export game
+        run: ./exported_files/Godot.app/Contents/MacOS/Godot --export "Mac OSX" ${{ github.workspace }}/project.godot path_to_export/game_mac.zip
