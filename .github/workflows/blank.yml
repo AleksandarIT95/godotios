@@ -1,22 +1,29 @@
-name: Export Godot Game
+name: iOS Export
+
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   export:
-    runs-on: macOS-latest
+    runs-on: macos-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Download Godot
-        run: curl -LO https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_macos.64.zip
+    - name: Set up Godot
+      uses: lihop/setup-godot@v2.1.0
 
-      - name: Unzip Godot
-        run: unzip Godot_v3.5.1-stable_macos.64.zip
+    - name: Export iOS game
+      run: godot --export "iOS" path/to/export/game.ipa
 
-      - name: Export game
-        run: ./exported_files/Godot.app/Contents/MacOS/Godot --export "Mac OSX" ${{ github.workspace }}/project.godot path_to_export/game_mac.zip
+    - name: Copy exported game
+      run: cp path/to/export/game.ipa ${{ github.workspace }}/game.ipa
+
+    - name: Upload game
+      uses: actions/upload-artifact@v2
+      with:
+        name: exported-game
+        path: ${{ github.workspace }}/game.ipa
