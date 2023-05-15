@@ -17,10 +17,10 @@ jobs:
     
     - name: Set up Godot Engine
       run: |
-        curl -sSL "https://downloads.tuxfamily.org/godotengine/latest/Godot_v3.5.2-stable_osx.universal.zip" -o godot.zip
+        curl -sSL "https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip" -o godot.zip
         unzip godot.zip
         chmod +x Godot.app/Contents/MacOS/Godot || exit 1
-        ls -l Godot.app/Contents/MacOS/ # Optional: List the contents of the folder for troubleshooting
+        ls -l Godot.app/Contents/MacOS/ # Optional: List the contents of the folder for troubleshootin
         
     - name: Install Xcode
       uses: actions/setup-node@v2
