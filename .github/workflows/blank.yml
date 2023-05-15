@@ -25,26 +25,21 @@ jobs:
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
-        export_path: '/Users/runner/work/aaa/aaa/ios/game.ipa'
-
-   # - name: Install Xcode
-   #   uses: sinoru/actions-setup-xcode@v2.0.2
-    #  with:
-   #     xcode-version: 'default'
+        export_path: '/Users/runner/work/project-name/project-name/ios/game.ipa'
 
     - name: Archive iOS App with Xcode
       run: |
         cd ios
-        xcodebuild archive -allowProvisioningUpdates -workspace aaa.xcworkspace -scheme aaa -archivePath aaa.xcarchive
+        xcodebuild archive -allowProvisioningUpdates -workspace ../aaa.xcworkspace -scheme aaa -archivePath aaa.xcarchive
 
     - name: Upload iOS Build Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: iOS Build
-        path: /Users/runner/Library/Developer/Xcode/Archives/{latest}/aaa.xcarchive/Products/Applications/aaa.app
+        path: /Users/runner/Library/Developer/Xcode/Archives/{latest}/aaa.xcarchive/Products/Applications/project-name.app
 
     - name: Upload iOS IPA Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: iOS IPA
-        path: /Users/runner/work/aaa/aaa/ios/game.ipa
+        path: /Users/runner/work/project-name/project-name/ios/game.ipa
