@@ -1,83 +1,51 @@
-name: Export Godot Game for iOS and Xcode
-
+name: "Godot Export Example"
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: 3.5.1
+  PROJECT_PATH: game
+  EXPORT_MODE: release # If not defined, defaults to debug
+  # Required if in release mode
+  # K8S_SECRET_RELEASE_KEYSTORE_BASE64: ${{ secrets.K8S_SECRET_RELEASE_KEYSTORE_BASE64 }}
+  # K8S_SECRET_RELEASE_KEYSTORE_USER: ${{ secrets.K8S_SECRET_RELEASE_KEYSTORE_USER }}
+  # K8S_SECRET_RELEASE_KEYSTORE_PASSWORD: ${{ secrets.K8S_SECRET_RELEASE_KEYSTORE_PASSWORD }}
+  GAME_VERSION_TAG: game/version # Defined In Godot's Editor Project Settings - Path To Custom Variable
+  ITCH_GAME: itchio-game
+  ITCH_USER: itchio-user
 
 jobs:
-  export-ios:
+  export:
+    name: "Godot Project Export"
     runs-on: macos-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Change working directory to project root
-        run: cd $GITHUB_WORKSPACE
+      - name: Download Godot
+        run: |
+          curl -LO https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64.zip
+          unzip Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64.zip
+          chmod +x Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64/Godot
+          sudo mv Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64/Godot /usr/local/bin/godot
+          rm Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64.zip
 
-      - name: Install dependencies
+      - name: Export iOS Version
         run: |
-          brew update
-          brew install wget
-          brew install git
-          
-      - name: Download Godot CLI
-        run: |
-          curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
-          
-      - name: Extract Godot CLI
-        run: |
-          pwd
-          ls
-          unzip godot.zip -d godot
-          mv godot/Godot.app/Contents/MacOS/* godot/
-          rm -rf godot/Godot.app
-          
-      - name: List contents of godot directory
-        run: |
-          ls -la godot
-          
-      - name: Download Godot iOS Export Template
-        run: |
-          curl -L -o ios_export_template.zip https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
-          
-      - name: Extract Godot iOS Export Template
-        run: |
-          unzip ios_export_template.zip -d ios_export_template
-          
-      - name: Download Godot Xcode Export Template
-        run: |
-          curl -L -o xcode_export_template.zip https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
-          
-      - name: Extract Godot Xcode Export Template
-        run: |
-          unzip xcode_export_template.zip -d xcode_export_template
-          
-      - name: Install iOS export template
-        run: |
-          ./godot/Godot --gdnative-generate-json-api
-          cp ios_export_template/iOS_*.zip .
-          unzip iOS_*.zip -d ios_export_template
-          ./godot/Godot --export "iOS" -tp ios_export_template godot-gdnative-api.json
-          
-      - name: Install Xcode export template
-        run: |
-          cp xcode_export_template/Xcode_*.zip .
-          unzip Xcode_*.zip -d xcode_export_template
-          ./godot/Godot --export-debug "Xcode" -tp xcode_export_template godot-gdnative-api.json
-          
-      - name: Build Godot Game for iOS
-        run: |
-          export_path="export/iOS"
-          ./godot/Godot --path . --export "iOS" "$export_path/game.ipa"
-          
-      - name: Archive iOS App
+          godot --export "iOS" ${{ env.PROJECT_PATH }}/export/ios/game.ipa
+
+      - name: Publish iOS Version
+        uses: vini-guerrero/godot-exporter/actions/publish@master
+        with:
+          platform: "Itch"
+          channel: "iOS"
+          project_path: ${{ env.PROJECT_PATH }}/export/ios/game.ipa
+
+      - name: Archive iOS Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: game.ipa
-          path: export/iOS/game.ipa
-
-      - name: Build Godot Game for Xcode
-        run: |
-          export_path="export/Xcode"
-          ./godot/Godot --path . --export
+          name: iOS
+          path: ${{ env.PROJECT_PATH }}/export/ios/game.ipa
