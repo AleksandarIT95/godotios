@@ -1,4 +1,4 @@
-name: iOS Export
+name: iOS Export and Upload
 on:
   push:
     branches:
@@ -18,8 +18,12 @@ jobs:
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
-    - name: Upload Artifact
+    - name: Create Export Folder
+      run: mkdir -p ./exported_files
+    - name: Move Exported Files
+      run: mv ./*.zip ./exported_files/
+    - name: Upload Exported Files
       uses: actions/upload-artifact@v2
       with:
-        name: iOS Build
-        path: /Users/runner/.local/share/godot/builds/iOS/aaa.xcworkspace
+        name: Exported Files
+        path: ./exported_files
