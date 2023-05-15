@@ -19,10 +19,15 @@ jobs:
       run: |
         curl -sSL "https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip" -o godot.zip
         unzip godot.zip
-        chmod +x Godot.app/Contents/MacOS/Godot || exit 1
-        ls -l Godot.app/Contents/MacOS/ # Optional: List the contents of the folder for troubleshooting
+        chmod +x Godot_v3.5.1-stable_osx.universal/Godot.app/Contents/MacOS/Godot
         
-    - name: Build and Test
+    - name: Install Xcode
+      uses: actions/setup-node@v2
+      with:
+        node-version: "14"
+        xcode-version: "12.x"
+    
+    - name: Build for iOS
       run: |
-        Godot.app/Contents/MacOS/Godot --export "Mac OSX" /path/to/exported/game
+        Godot_v3.5.1-stable_osx.universal/Godot.app/Contents/MacOS/Godot --export "iOS" /path/to/exported/game
         # Additional build and test commands
