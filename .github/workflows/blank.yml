@@ -1,31 +1,29 @@
-name: Godot iOS Export
+name: Export Game
 
 on:
   push:
     branches:
-      - main # Replace with your desired branch
+      - main
 
 jobs:
-  build:
-    runs-on: macOS-latest
+  export_game:
+    runs-on: ubuntu-latest
+    
     steps:
-      - name: Set up Git
-        uses: actions/checkout@v2
-
-      - name: Set up Godot
-        run: |
-          wget https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
-          unzip Godot_v3.5.1-stable_export_templates.tpz
-          mkdir -p ~/.godot/templates
-          mv templates ~/.godot/templates
-
-      - name: Build iOS export
-        run: |
-          sudo xcode-select --switch /Applications/Xcode.app
-          godot --export "iOS" .
-
-      - name: Upload iOS export
-        uses: actions/upload-artifact@v2
-        with:
-          name: iOS-export
-          path: iOS_export
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    
+    - name: Set up Godot
+      run: |
+        sudo apt update
+        sudo apt install -y godot3.5
+    
+    - name: Export Game
+      run: |
+        godot3.5 --export "Platform" /path/to/exported/game
+    
+    - name: Create Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Exported Game
+        path: /path/to/exported/game
