@@ -20,7 +20,7 @@ jobs:
     
     - name: Export Game
       run: |
-        ./Godot.app --export "Platform" /path/to/exported/game
+        .Godot_v3.5.1-stable_osx.universal --export "Platform" /path/to/exported/game
     
     - name: Create Artifact
       uses: actions/upload-artifact@v2
