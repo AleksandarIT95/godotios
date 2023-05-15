@@ -21,7 +21,7 @@ jobs:
     - name: Create Export Folder
       run: mkdir -p ./exported_files
     - name: Move Exported Files
-      run: mv ./*.zip ./exported_files/
+      run: mv ./*.zip ./exported_files/ || true
     - name: Upload Exported Files
       uses: actions/upload-artifact@v2
       with:
