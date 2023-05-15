@@ -7,20 +7,20 @@ on:
 
 jobs:
   export_game:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
     
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
     
-    - name: Set up Godot
+    - name: Download Godot 3.5.1
       run: |
-        sudo apt update
-        sudo apt install -y godot3.5
+        wget https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.64.zip
+        unzip Godot_v3.5.1-stable_osx.64.zip
     
     - name: Export Game
       run: |
-        godot3.5 --export "Platform" /path/to/exported/game
+        ./Godot_v3.5.1-stable_osx.64 --export "Platform" /path/to/exported/game
     
     - name: Create Artifact
       uses: actions/upload-artifact@v2
