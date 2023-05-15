@@ -1,51 +1,27 @@
-name: "Godot Export Example"
+name: Build and Test
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-
-env:
-  GODOT_VERSION: 3.5.1
-  PROJECT_PATH: game
-  EXPORT_MODE: release # If not defined, defaults to debug
-  # Required if in release mode
-  # K8S_SECRET_RELEASE_KEYSTORE_BASE64: ${{ secrets.K8S_SECRET_RELEASE_KEYSTORE_BASE64 }}
-  # K8S_SECRET_RELEASE_KEYSTORE_USER: ${{ secrets.K8S_SECRET_RELEASE_KEYSTORE_USER }}
-  # K8S_SECRET_RELEASE_KEYSTORE_PASSWORD: ${{ secrets.K8S_SECRET_RELEASE_KEYSTORE_PASSWORD }}
-  GAME_VERSION_TAG: game/version # Defined In Godot's Editor Project Settings - Path To Custom Variable
-  ITCH_GAME: itchio-game
-  ITCH_USER: itchio-user
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  export:
-    name: "Godot Project Export"
+  build:
     runs-on: macos-latest
+    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Download Godot
-        run: |
-          curl -LO https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64.zip
-          unzip Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64.zip
-          chmod +x Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64/Godot
-          sudo mv Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64/Godot /usr/local/bin/godot
-          rm Godot_v${{ env.GODOT_VERSION }}.stable.macosx.64.zip
-
-      - name: Export iOS Version
-        run: |
-          godot --export "iOS" ${{ env.PROJECT_PATH }}/export/ios/game.ipa
-
-      - name: Publish iOS Version
-        uses: vini-guerrero/godot-exporter/actions/publish@master
-        with:
-          platform: "Itch"
-          channel: "iOS"
-          project_path: ${{ env.PROJECT_PATH }}/export/ios/game.ipa
-
-      - name: Archive iOS Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: iOS
-          path: ${{ env.PROJECT_PATH }}/export/ios/game.ipa
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Set up Godot Engine
+      run: |
+        curl -sSL "https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip" -o godot.zip
+        unzip godot.zip
+        chmod +x Godot_v3.5.1-stable_osx.universal/Godot.app/Contents/MacOS/Godot
+    
+    - name: Build and Test
+      run: |
+        Godot_v3.5.1-stable_osx.universal/Godot.app/Contents/MacOS/Godot --export "Mac OSX" /path/to/exported/game
+        # Additional build and test commands
