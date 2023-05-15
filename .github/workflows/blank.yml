@@ -1,29 +1,32 @@
-name: iOS Export
+name: Export and build iOS app
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  export:
+  build:
+    name: Export and build
     runs-on: macos-latest
-
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Set up Godot
-      uses: lihop/setup-godot@v2.1.0
-
-    - name: Export iOS game
-      run: godot --export "iOS" path/to/export/game.ipa
-
-    - name: Copy exported game
-      run: cp path/to/export/game.ipa ${{ github.workspace }}/game.ipa
-
-    - name: Upload game
+    - name: Create export directory
+      run: mkdir -p ./export/ios_template
+    - name: Download export templates
+      run: |
+        curl -L -o ./export/godot_export_templates.zip https://downloads.tuxfamily.org/godotengine/3.4.3/Godot_v3.4.3-stable_export_templates.tpz
+        unzip -q -d ./export/godot_export_templates ./export/godot_export_templates.zip
+        curl -L -o ./export/ios_template.zip https://github.com/godotengine/godot-ios-template/archive/master.zip
+        unzip -q -d ./export/ios_template ./export/ios_template.zip
+    - name: Export Godot game
+      run: ./export/godot_export_templates/mac/Godot_v3.4.3-stable_export_templates/MacOS/Godot --export "iOS" ./export/YourApp.ipa
+    - name: Create Xcode project
+      run: ./export/ios_template/godot_ios_export.py --create-xcodeproj --template=./export/ios_template --path=./export
+    - name: Build iOS app with Xcode
+      run: xcodebuild -workspace ./export/YourApp.xcworkspace -scheme YourScheme -destination generic/platform=iOS build
+    - name: Upload app archive
       uses: actions/upload-artifact@v2
       with:
-        name: exported-game
-        path: ${{ github.workspace }}/game.ipa
+        name: ios-app
+        path: ./export/YourApp.xcarchive
