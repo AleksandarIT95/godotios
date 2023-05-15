@@ -1,48 +1,25 @@
 name: iOS Export
-
 on:
   push:
     branches:
       - main
-
 jobs:
-  build_and_export_ios:
+  build:
     runs-on: macOS-latest
-
     steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@v2
-
-    - name: Create iOS directory
-      run: mkdir -p ios
-
     - name: Export iOS
       uses: firebelley/godot-export@v5.1.0
       with:
         godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_osx.universal.zip
         godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/Godot_v3.5.1-stable_export_templates.tpz
-        relative__path: './'
+        relative_project_path: './'
         export_preset: export_presets
         export_debug: true
         export_as_pack: true
-        export_path: '/Users/runner/work/aaa/aaa/ios'
-
-    - name: List iOS directory contents
-      run: ls -l ios
-
-    - name: Archive iOS App with Xcode
-      run: |
-        cd ios
-        xcodebuild archive -allowProvisioningUpdates -workspace ../../aaa.xcworkspace -scheme aaa -archivePath aaa.xcarchive
-
-    - name: Upload iOS Build Artifact
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: iOS Build
-        path: /Users/runner/Library/Developer/Xcode/Archives/{latest}/aaa.xcarchive/Products/Applications/aaa.app
-
-    - name: Upload iOS IPA Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: iOS IPA
-        path: /Users/runner/work/aaa/aaa/ios/game.ipa
+        path: /Users/runner/.local/share/godot/builds/iOS/
